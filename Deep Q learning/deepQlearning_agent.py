@@ -17,8 +17,10 @@ class Qnet(nn.Module):
     def __init__(self, input_dim, output_dim):
         super(Qnet, self).__init__()
         self.fc1 = nn.Linear(input_dim, 24)
-        self.fc2 = nn.Linear(24, 24)
-        self.fc3 = nn.Linear(24, output_dim)    
+        self.fc2 = nn.Linear(24, 60)
+        self.fc3 = nn.Linear(60, 30)
+        self.fc4 = nn.Linear(30, output_dim)  
+
     
     def forward(self, x):
         x = self.fc1(x)
@@ -26,6 +28,8 @@ class Qnet(nn.Module):
         x = self.fc2(x)
         x = torch.relu(x)
         x = self.fc3(x)
+        x = torch.relu(x)
+        x = self.fc4(x)
         return x
 
 
@@ -55,7 +59,7 @@ class ReplayBuffer():
 
 # define the agent
 class Agent():
-    def __init__(self, env, device, learning_rate, discount_rate, epsilon, min_epsilon, epsilon_decay_rate):
+    def __init__(self, env, device='cuda', learning_rate=0.001, discount_rate=0.8, epsilon=1, min_epsilon=0.01, epsilon_decay_rate=0.01):
         self.env = env
         self.device = device
         self.learning_rate = learning_rate
@@ -96,7 +100,7 @@ class Agent():
         batch   = self.replay_buffer.sample(batch_size)
         states  = torch.tensor([transition[0] for transition in batch]).float().to(self.device)
         actions = torch.tensor([transition[1] for transition in batch]).to(self.device)
-        rewards = torch.tensor([transition[2] for transition in batch]).to(self.device)
+        rewards = torch.tensor([transition[2] for transition in batch]).float().to(self.device)
         next_states = torch.tensor([transition[3] for transition in batch]).float().to(self.device)
         dones = torch.tensor([transition[4] for transition in batch]).to(self.device)
 
@@ -117,6 +121,7 @@ class Agent():
             state = self.env.reset()[0]
             done = False
             score = 0
+            start_time = time.time()
             while not done:
                 action = self.explore(state)
                 next_state, reward, done, _, _ = self.env.step(action)
@@ -125,6 +130,9 @@ class Agent():
                 self.learn(batch_size)
                 state = next_state
                 self.env.render()
+                current_time = time.time()
+                if current_time - start_time > 60:
+                    break
                 
             self.decay_epsilon()
             print('Epoch: ', epoch+1, ' Epsilon: ', self.epsilon, ' Score: ', score)
