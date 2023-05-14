@@ -7,6 +7,7 @@ python train.py --game <environment_name> --epochs <number_of_epochs>
 ```bash
 python test.py --game <environment_name> 
 ```
+For now the agent can be trained in LunarLander-v2 and CartPole-v0
 
 ## Reference:
 
