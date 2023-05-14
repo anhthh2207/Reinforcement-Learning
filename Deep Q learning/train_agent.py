@@ -18,7 +18,7 @@ discount_rate       = 0.8
 epsilon             = 1
 min_epsilon         = 0.01
 epsilon_decay_rate  = 0.01
-number_of_epochs    = parser
+number_of_epochs    = parser.parse_args().epochs
 batch_size          = 128
 
 
