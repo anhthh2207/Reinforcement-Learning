@@ -28,5 +28,5 @@ env.close()
 
 agent.plot_score() 
 
-#save the model
-agent.save_model('Deep Q learning\pretrained-models\DQL-{}.pth'.format(game))
+# save the model
+# agent.save_model('Deep Q learning\pretrained-models\DQL-{}.pth'.format(game))
