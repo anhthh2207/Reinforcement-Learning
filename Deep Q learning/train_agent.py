@@ -1,6 +1,6 @@
 import gym
 import torch
-from deepQlearning import Agent
+from deepQlearning_agent import Agent
 
 env = gym.make('CartPole-v1', render_mode='human')
 
