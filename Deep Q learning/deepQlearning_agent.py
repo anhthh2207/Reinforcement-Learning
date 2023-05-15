@@ -133,8 +133,8 @@ class Agent():
                 state = next_state
                 self.env.render()
                 current_time = time.time()
-                if current_time - start_time > 60:
-                    break
+                # if current_time - start_time > 60:
+                #     break
                 
             self.decay_epsilon()
             print('Epoch: ', epoch+1, ' Epsilon: ', self.epsilon, ' Score: ', score)
@@ -145,5 +145,12 @@ class Agent():
         plt.ylabel('Score')
         plt.xlabel('Epochs')
         plt.show()
+
+    def save_model(self, path):
+        torch.save(self.Q.state_dict(), path)
+
+    def load_model(self, path):
+        self.Q.load_state_dict(torch.load(path))
+        self.Q.eval()
         
 
